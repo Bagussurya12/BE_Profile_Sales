@@ -163,10 +163,38 @@ class UserHandler {
         user: updatedUser,
       });
     } catch (error) {
-      console.error(error);
+      if (!error.code) {
+        error.code = 500;
+      }
       return res.status(error.code || 500).json({
         status: false,
-        message: error.message || "Internal Server Error",
+        message: error.message || "INTERNAL_SERVER_ERROR",
+      });
+    }
+  }
+  async getUserById(req, res) {
+    try {
+      if (!req.params.userId) {
+        throw { code: 428, message: "ID_IS_REQUIRED" };
+      }
+      const user = await prisma.users.findUnique({
+        where: { id: req.params.userId },
+      });
+      if (!user) {
+        throw { code: 404, message: "USER_NOT_FOUND" };
+      }
+      return res.status(200).json({
+        status: true,
+        message: "GET_USER_SUCCESS",
+        user: user,
+      });
+    } catch (error) {
+      if (!error.code) {
+        error.code = 500;
+      }
+      return res.status(500).json({
+        status: false,
+        message: error.message,
       });
     }
   }
