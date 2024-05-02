@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-const isnNickNameExist = async (nickName) => {
+const isNickNameExist = async (nickName) => {
   const user = await prisma.users.findFirst({
     where: {
       nick_name: nickName,
@@ -21,4 +21,4 @@ const isNickNameExistWithUserId = async (id, nickName) => {
   return user !== null;
 };
 
-export { isnNickNameExist, isNickNameExistWithUserId };
+export { isNickNameExist, isNickNameExistWithUserId };

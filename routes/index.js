@@ -11,5 +11,6 @@ router.post("/refresh-token", AuthHandler.refreshToken);
 // USERS ROUTE
 router.get("/Users", UserHandler.getAllUserHandler);
 router.post("/Add-User", UserHandler.addUserHandler);
+router.put("/Update-User/:userId", UserHandler.updateUserHandler);
 
 export default router;

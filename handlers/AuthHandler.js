@@ -5,7 +5,7 @@ import JsonWebToken from "jsonwebtoken";
 import dotenv from "dotenv";
 import isEmailValid from "../library/isEmailValid.js";
 import { nanoid } from "nanoid";
-import { isnNickNameExist } from "../library/nickNameExist.js";
+import { isNickNameExist } from "../library/nickNameExist.js";
 
 const env = dotenv.config().parsed;
 const prisma = new PrismaClient();
@@ -37,7 +37,7 @@ class AuthHandler {
       if (emailExist) {
         throw { code: 409, message: "EMAIL_ALREADY_EXIST" };
       }
-      const nickNameExist = await isnNickNameExist(req.body.nickName);
+      const nickNameExist = await isNickNameExist(req.body.nickName);
       if (nickNameExist) {
         throw { code: 409, message: "NICK_NAME_ALREADY_EXIST" };
       }
