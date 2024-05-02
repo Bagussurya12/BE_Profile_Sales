@@ -198,6 +198,34 @@ class UserHandler {
       });
     }
   }
+  async deleteUserById(req, res) {
+    try {
+      if (!req.params.userId) {
+        throw { code: 428, message: ID_IS_REQUIRED };
+      }
+      const userId = req.params.userId;
+      const user = await prisma.users.delete({
+        where: { id: userId },
+      });
+      if (!user) {
+        throw { code: 500, message: DELETE_USER_FAILED };
+      }
+
+      return res.status(200).json({
+        status: true,
+        message: "SUCCESS_DELETE_USER",
+        user,
+      });
+    } catch (error) {
+      if (!error.code) {
+        error.code = 500;
+      }
+      return res.status(error.code).json({
+        status: false,
+        message: error.message,
+      });
+    }
+  }
 }
 
 export default new UserHandler();
