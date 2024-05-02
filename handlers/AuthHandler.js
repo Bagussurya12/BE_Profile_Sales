@@ -21,7 +21,7 @@ const generateRefreshToken = async (payload) => {
 class AuthHandler {
   async register(req, res) {
     try {
-      if (!req.body.name || !req.body.email || !req.body.password || !req.body.status || !req.body.level || req.body.nickName) {
+      if (!req.body.fullname || !req.body.email || !req.body.password || !req.body.status || !req.body.level || !req.body.nickName) {
         throw { code: 400, message: "MISSING_REQUIRED_FIELDS" };
       }
 
@@ -49,7 +49,7 @@ class AuthHandler {
       const user = await prisma.users.create({
         data: {
           id: id,
-          name: req.body.name,
+          fullname: req.body.fullname,
           email: req.body.email,
           password: hash,
           status: req.body.status,
