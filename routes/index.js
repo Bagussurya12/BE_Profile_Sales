@@ -10,5 +10,6 @@ router.post("/login", AuthHandler.login);
 router.post("/refresh-token", AuthHandler.refreshToken);
 // USERS ROUTE
 router.get("/Users", UserHandler.getAllUserHandler);
+router.post("/Add-User", UserHandler.addUserHandler);
 
 export default router;
