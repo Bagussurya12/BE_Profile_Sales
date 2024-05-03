@@ -49,3 +49,5 @@ class ProfileHandler {
     }
   }
 }
+
+export default new ProfileHandler();
