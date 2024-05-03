@@ -146,7 +146,7 @@ class UserHandler {
       const salt = await bcrypt.genSalt(10);
       const hash = await bcrypt.hash(password, salt);
 
-      const updatedUser = await prisma.users.update({
+      const updatedUser = await prisma.user.update({
         where: { id: req.params.userId },
         data: {
           fullname: fullname,
