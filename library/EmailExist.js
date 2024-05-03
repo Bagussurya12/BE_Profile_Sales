@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 const isEmailExist = async (email) => {
-  const user = await prisma.users.findFirst({
+  const user = await prisma.user.findFirst({
     where: {
       email: email,
     },
@@ -12,7 +12,7 @@ const isEmailExist = async (email) => {
 };
 
 const isEmailExistWithUserId = async (id, email) => {
-  const user = await prisma.users.findUnique({
+  const user = await prisma.user.findUnique({
     where: {
       id: id,
       email: email,

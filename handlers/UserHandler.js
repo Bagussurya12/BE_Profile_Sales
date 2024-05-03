@@ -12,7 +12,7 @@ class UserHandler {
     try {
       const { page = 1, perPage = 10 } = req.query;
       const skip = (page - 1) * perPage;
-      const users = await prisma.users.findMany({
+      const users = await prisma.user.findMany({
         skip: skip,
         take: perPage,
       });
@@ -55,7 +55,7 @@ class UserHandler {
         throw { code: 409, message: "EMAIL_ALREADY_EXIST" };
       }
 
-      const nickNameExist = await isnNickNameExist(nickName);
+      const nickNameExist = await isNickNameExist(nickName);
       if (nickNameExist) {
         throw { code: 409, message: "NICK_NAME_ALREADY_EXIST" };
       }
@@ -63,7 +63,7 @@ class UserHandler {
       const salt = await bcrypt.genSalt(10);
       const hash = await bcrypt.hash(password, salt);
 
-      const user = await prisma.users.create({
+      const user = await prisma.user.create({
         data: {
           id: nanoid(12),
           fullname: fullname,
@@ -116,7 +116,7 @@ class UserHandler {
         throw { code: 428, message: "LEVEL_IS_REQUIRED" };
       }
 
-      const user = await prisma.users.findUnique({
+      const user = await prisma.user.findUnique({
         where: { id: req.params.userId },
       });
 
@@ -177,8 +177,34 @@ class UserHandler {
       if (!req.params.userId) {
         throw { code: 428, message: "ID_IS_REQUIRED" };
       }
-      const user = await prisma.users.findUnique({
+      const user = await prisma.user.findUnique({
         where: { id: req.params.userId },
+      });
+      if (!user) {
+        throw { code: 404, message: "USER_NOT_FOUND" };
+      }
+      return res.status(200).json({
+        status: true,
+        message: "GET_USER_SUCCESS",
+        user: user,
+      });
+    } catch (error) {
+      if (!error.code) {
+        error.code = 500;
+      }
+      return res.status(500).json({
+        status: false,
+        message: error.message,
+      });
+    }
+  }
+  async getUserByNickName(req, res) {
+    try {
+      if (!req.params.nickName) {
+        throw { code: 428, message: "ID_IS_REQUIRED" };
+      }
+      const user = await prisma.user.findUnique({
+        where: { nick_name: req.params.nickName },
       });
       if (!user) {
         throw { code: 404, message: "USER_NOT_FOUND" };
@@ -204,7 +230,7 @@ class UserHandler {
         throw { code: 428, message: ID_IS_REQUIRED };
       }
       const userId = req.params.userId;
-      const user = await prisma.users.delete({
+      const user = await prisma.user.delete({
         where: { id: userId },
       });
       if (!user) {

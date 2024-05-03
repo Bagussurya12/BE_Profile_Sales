@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 const isNickNameExist = async (nickName) => {
-  const user = await prisma.users.findFirst({
+  const user = await prisma.user.findFirst({
     where: {
       nick_name: nickName,
     },
@@ -12,7 +12,7 @@ const isNickNameExist = async (nickName) => {
 };
 
 const isNickNameExistWithUserId = async (id, nickName) => {
-  const user = await prisma.users.findUnique({
+  const user = await prisma.user.findUnique({
     where: {
       id: id,
       nick_name: nickName,

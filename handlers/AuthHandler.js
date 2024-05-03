@@ -29,7 +29,7 @@ class AuthHandler {
         throw { code: 409, message: "EMAIL_INVALID" };
       }
 
-      if (req.body.password.length <= 7) {
+      if (req.body.password.length < 8) {
         throw { code: 400, message: "PASSWORD_MINIMUM_8_CHARACTER" };
       }
 
@@ -45,8 +45,10 @@ class AuthHandler {
       const salt = await bcrypt.genSalt(10);
       const hash = await bcrypt.hash(req.body.password, salt);
       const id = `User-${nanoid(12)}`;
+      const profileId = `UserProfile-${nanoid(8)}`;
+      const sosMedId = `sosmed-${nanoid(8)}`;
 
-      const user = await prisma.users.create({
+      const user = await prisma.user.create({
         data: {
           id: id,
           fullname: req.body.fullname,
@@ -55,6 +57,15 @@ class AuthHandler {
           status: req.body.status,
           level: req.body.level,
           nick_name: req.body.nickName,
+          profile: {
+            create: {
+              id: profileId,
+              fullName: req.body.fullname,
+            },
+          },
+        },
+        include: {
+          profile: true,
         },
       });
 
@@ -69,31 +80,42 @@ class AuthHandler {
       return res.status(200).json({
         status: true,
         message: "USER_REGISTER_SUCCESS",
-        name: user.name,
+        name: user.fullname,
+        userId: user.id,
+        profileId: profileId,
+        sosmedId: sosMedId,
         accessToken,
         refreshToken,
       });
     } catch (error) {
       console.error(error);
-      return res.status(error.code || 500).json({ status: false, message: error.message });
+      let errorMessage = "INTERNAL_SERVER_ERROR";
+      if (error.code === 400) errorMessage = error.message;
+      else if (error.code === 409) errorMessage = error.message;
+      else if (error.code === 500) errorMessage = error.message;
+      return res.status(error.code || 500).json({ status: false, message: errorMessage });
     }
   }
+
   async login(req, res) {
     try {
       if (!req.body.email || !req.body.password) {
         throw { code: 428, message: "MISSING_REQUIRED_FIELDS" };
       }
-      const user = await prisma.users.findFirst({
+      const user = await prisma.user.findFirst({
         where: {
           email: req.body.email,
+        },
+        include: {
+          profile: true,
         },
       });
       if (!user) {
         throw { code: 404, message: "USER_NOT_FOUND" };
       }
-      const isPasswordValid = await bcrypt.compareSync(req.body.password, user.password);
+      const isPasswordValid = await bcrypt.compare(req.body.password, user.password);
       if (!isPasswordValid) {
-        throw { code: 404, message: "PASSWORD_INVALID" };
+        throw { code: 404, message: "INVALID_CREDENTIALS" };
       }
       let payload = { id: user.id };
       const accessToken = await generateAccessToken(payload);
@@ -106,12 +128,14 @@ class AuthHandler {
         refreshToken,
       });
     } catch (error) {
-      return res.status(error.code || 500).json({
-        status: false,
-        message: error.message,
-      });
+      console.error(error);
+      let errorMessage = "INTERNAL_SERVER_ERROR";
+      if (error.code === 428) errorMessage = error.message;
+      else if (error.code === 404) errorMessage = error.message;
+      return res.status(error.code || 500).json({ status: false, message: errorMessage });
     }
   }
+
   async refreshToken(req, res) {
     try {
       if (!req.body.refreshToken) {
@@ -129,18 +153,14 @@ class AuthHandler {
         refreshToken,
       });
     } catch (error) {
-      if (!error.code) {
-        error.code = 500;
+      console.error(error);
+      let errorMessage = "INTERNAL_SERVER_ERROR";
+      if (error.message === "jwt expired") {
+        errorMessage = "REFRESH_TOKEN_EXPIRED";
+      } else if (["invalid signature", "jwt malformed", "jwt must be provided", "invalid token"].includes(error.message)) {
+        errorMessage = "INVALID_REFRESH_TOKEN";
       }
-      if (error.message == "jwt expired") {
-        error.message = "REFRESH_TOKEN_EXPIRED";
-      } else if (error.message == "invalid signature" || error.message == "jwt malformed" || error.message == "jwt must be provided" || error.message == "invalid token") {
-        error.message = "INVALID_REFRESH_TOKEN";
-      }
-      return res.status(error.code).json({
-        status: false,
-        message: error.message,
-      });
+      return res.status(error.code || 500).json({ status: false, message: errorMessage });
     }
   }
 }
