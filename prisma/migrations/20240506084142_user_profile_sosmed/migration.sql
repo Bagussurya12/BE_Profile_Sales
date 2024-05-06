@@ -30,7 +30,7 @@ CREATE TABLE "Profile" (
 -- CreateTable
 CREATE TABLE "SocialMedia" (
     "id" TEXT NOT NULL,
-    "profileId" TEXT NOT NULL,
+    "profileId" TEXT,
     "facebook" TEXT,
     "twitter" TEXT,
     "instagram" TEXT,
@@ -56,4 +56,4 @@ CREATE UNIQUE INDEX "SocialMedia_profileId_key" ON "SocialMedia"("profileId");
 ALTER TABLE "Profile" ADD CONSTRAINT "Profile_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "SocialMedia" ADD CONSTRAINT "SocialMedia_profileId_fkey" FOREIGN KEY ("profileId") REFERENCES "Profile"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "SocialMedia" ADD CONSTRAINT "SocialMedia_profileId_fkey" FOREIGN KEY ("profileId") REFERENCES "Profile"("id") ON DELETE SET NULL ON UPDATE CASCADE;

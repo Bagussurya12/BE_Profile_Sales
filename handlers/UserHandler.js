@@ -60,12 +60,13 @@ class UserHandler {
         throw { code: 409, message: "NICK_NAME_ALREADY_EXIST" };
       }
 
+      const id = `User-${nanoid(12)}`;
       const salt = await bcrypt.genSalt(10);
       const hash = await bcrypt.hash(password, salt);
 
       const user = await prisma.user.create({
         data: {
-          id: nanoid(12),
+          id: id,
           fullname: fullname,
           email: email,
           password: hash,
@@ -211,7 +212,6 @@ class UserHandler {
       }
       return res.status(200).json({
         status: true,
-        message: "GET_USER_SUCCESS",
         user: user,
       });
     } catch (error) {
@@ -230,9 +230,17 @@ class UserHandler {
         throw { code: 428, message: ID_IS_REQUIRED };
       }
       const userId = req.params.userId;
+
+      // Hapus profil pengguna terlebih dahulu
+      await prisma.profile.deleteMany({
+        where: { userId: userId },
+      });
+
+      // Setelah menghapus profil, baru hapus pengguna
       const user = await prisma.user.delete({
         where: { id: userId },
       });
+
       if (!user) {
         throw { code: 500, message: DELETE_USER_FAILED };
       }
@@ -246,7 +254,7 @@ class UserHandler {
       if (!error.code) {
         error.code = 500;
       }
-      return res.status(error.code).json({
+      return res.status(500).json({
         status: false,
         message: error.message,
       });

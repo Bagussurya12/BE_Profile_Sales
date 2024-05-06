@@ -10,11 +10,11 @@ import { isNickNameExist } from "../library/nickNameExist.js";
 const env = dotenv.config().parsed;
 const prisma = new PrismaClient();
 
-const generateAccessToken = async (payload) => {
+const generateAccessToken = (payload) => {
   return JsonWebToken.sign(payload, env.JWT_ACCESS_TOKEN_SECRET, { expiresIn: env.JWT_ACCESS_TOKEN_LIFE });
 };
 
-const generateRefreshToken = async (payload) => {
+const generateRefreshToken = (payload) => {
   return JsonWebToken.sign(payload, env.JWT_REFRESH_TOKEN_SECRET, { expiresIn: env.JWT_REFRESH_TOKEN_LIFE });
 };
 
@@ -61,21 +61,26 @@ class AuthHandler {
             create: {
               id: profileId,
               fullName: req.body.fullname,
+              socialMedia: {
+                create: {
+                  id: sosMedId,
+                },
+              },
             },
           },
         },
         include: {
-          profile: true,
+          profile: {
+            include: {
+              socialMedia: true,
+            },
+          },
         },
       });
 
-      if (!user) {
-        throw { code: 500, message: "USER_REGISTER_FAILED" };
-      }
-
       const payload = { id: user.id };
-      const accessToken = await generateAccessToken(payload);
-      const refreshToken = await generateRefreshToken(payload);
+      const accessToken = generateAccessToken(payload);
+      const refreshToken = generateRefreshToken(payload);
 
       return res.status(200).json({
         status: true,
@@ -111,15 +116,15 @@ class AuthHandler {
         },
       });
       if (!user) {
-        throw { code: 404, message: "USER_NOT_FOUND" };
+        throw { code: 401, message: "USER_NOT_FOUND" };
       }
       const isPasswordValid = await bcrypt.compare(req.body.password, user.password);
       if (!isPasswordValid) {
-        throw { code: 404, message: "INVALID_CREDENTIALS" };
+        throw { code: 401, message: "INVALID_CREDENTIALS" };
       }
-      let payload = { id: user.id };
-      const accessToken = await generateAccessToken(payload);
-      const refreshToken = await generateRefreshToken(payload);
+      const payload = { id: user.id };
+      const accessToken = generateAccessToken(payload);
+      const refreshToken = generateRefreshToken(payload);
 
       return res.status(200).json({
         status: true,
@@ -131,20 +136,17 @@ class AuthHandler {
       console.error(error);
       let errorMessage = "INTERNAL_SERVER_ERROR";
       if (error.code === 428) errorMessage = error.message;
-      else if (error.code === 404) errorMessage = error.message;
+      else if (error.code === 401) errorMessage = error.message;
       return res.status(error.code || 500).json({ status: false, message: errorMessage });
     }
   }
 
   async refreshToken(req, res) {
     try {
-      if (!req.body.refreshToken) {
-        throw { code: 428, message: "REFRESH_TOKEN_IS_REQUIRED" };
-      }
       const verify = await JsonWebToken.verify(req.body.refreshToken, env.JWT_REFRESH_TOKEN_SECRET);
-      let payload = { id: verify.id, role: verify.role };
-      const accessToken = await generateAccessToken(payload);
-      const refreshToken = await generateRefreshToken(payload);
+      const payload = { id: verify.id, role: verify.role };
+      const accessToken = generateAccessToken(payload);
+      const refreshToken = generateRefreshToken(payload);
 
       return res.status(200).json({
         status: true,
