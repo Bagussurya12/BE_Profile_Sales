@@ -4,6 +4,32 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 class sosmedHandler {
+  async getSosmedById(req, res) {
+    try {
+      if (!req.params.sosmedId) {
+        throw { code: 428, message: "ID_IS_REQUIRED" };
+      }
+      const sosmed = await prisma.socialMedia.findUnique({
+        where: { id: req.params.sosmedId },
+      });
+      if (!sosmed) {
+        throw { code: 404, message: "SOSMED_NOT_FOUND" };
+      }
+      return res.status(200).json({
+        status: true,
+        message: "GET_SOSMED_SUCCESS",
+        sosmed: sosmed,
+      });
+    } catch (error) {
+      if (!error.code) {
+        error.code = 500;
+      }
+      return res.status(error.code || 500).json({
+        status: false,
+        message: error.message || "INTERNAL_SERVER_ERROR",
+      });
+    }
+  }
   async updateSosmedHandler(req, res) {
     try {
       if (!req.params.sosmedId) {
@@ -15,6 +41,7 @@ class sosmedHandler {
       if (!sosmed) {
         throw { code: 428, message: "SOCIAL_MEDIA_NOT_FOUND" };
       }
+      const { facebook, twitter, instagram, linkedin, youtube } = req.body;
       const updateSosmed = await prisma.socialMedia.update({
         where: { id: req.params.sosmedId },
         data: {
