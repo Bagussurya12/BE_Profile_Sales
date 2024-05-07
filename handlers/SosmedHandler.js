@@ -41,3 +41,5 @@ class sosmedHandler {
     }
   }
 }
+
+export default new sosmedHandler();
