@@ -18,5 +18,6 @@ router.put("/Update-User/:userId", UserHandler.updateUserHandler);
 router.delete("/users/delete/:userId", UserHandler.deleteUserById);
 // SOSMED ROUTE
 router.put("/sosmed/:sosmedId", SosmedHandler.updateSosmedHandler);
+router.get("/sosmed/:sosmedId", SosmedHandler.getSosmedById);
 
 export default router;

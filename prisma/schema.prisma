@@ -6,6 +6,9 @@
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -50,4 +53,29 @@ model SocialMedia {
   linkedin  String?
   youtube   String?
   profile   Profile? @relation(fields: [profileId], references: [id])
+}
+
+
+// Model untuk informasi rumah yang dijual
+model House {
+  id                String     @id 
+  harga             Float?
+  tipe_rumah        String?
+  luas_tanah        Float?
+  luas_bangunan     Float?
+  jumlah_kamar_tidur Int?
+  jumlah_kamar_mandi Int?
+  deskripsi         String?
+  spesifikasi       String?
+
+  // Relasi dengan model GambarRumah
+  gambar            HousePicture[]
+}
+
+// Model untuk menyimpan gambar rumah
+model HousePicture {
+  id        String      @id
+  house     House       @relation(fields: [houseId], references: [id])
+  houseId   String
+  gambar_url String
 }
