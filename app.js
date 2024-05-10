@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import { PrismaClient } from "@prisma/client";
+import multer from "multer";
 
 import indexRouter from "./routes/index.js";
 
@@ -11,6 +12,9 @@ var app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use("/static", express.static(resolve("public")));
+
+app.use(multer({ dest: "public/image" }).single("image"));
 
 app.use("/", indexRouter);
 
