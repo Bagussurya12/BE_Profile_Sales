@@ -1,7 +1,9 @@
 import express from "express";
 import dotenv from "dotenv";
 import { PrismaClient } from "@prisma/client";
-import multer from "multer";
+import { resolve } from "path";
+import { uploadFile } from "./middlewares/UploadFile.js";
+import checkFileType from "./middlewares/CheckType.js";
 
 import indexRouter from "./routes/index.js";
 
@@ -14,7 +16,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use("/static", express.static(resolve("public")));
 
-app.use(multer({ dest: "public/image" }).single("image"));
+app.use(uploadFile, checkFileType);
 
 app.use("/", indexRouter);
 
