@@ -1,6 +1,15 @@
 import { fileTypeFromFile } from "file-type";
 import { TYPE_IMAGE } from "./UploadFile.js";
-import { unlink } from "node:fs/promises";
+import { unlink, access } from "node:fs/promises";
+
+async function checkFile(path) {
+  try {
+    await access(path);
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 export default async function checkFileType(req, res, next) {
   const file = req.file;
@@ -8,7 +17,10 @@ export default async function checkFileType(req, res, next) {
   const fileType = await fileTypeFromFile(file.path);
 
   if (!acceptMime.includes(fileType.mime)) {
-    await unlink(file.path);
+    const isExistFile = await checkFile(file.path);
+    if (isExistFile) {
+      await unlink(file.path);
+    }
     res.status(409).json({ mesage: "FILE_FORBIDEN" });
   }
 

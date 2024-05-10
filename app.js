@@ -4,6 +4,7 @@ import { PrismaClient } from "@prisma/client";
 import { resolve } from "path";
 import { uploadFile } from "./middlewares/UploadFile.js";
 import checkFileType from "./middlewares/CheckType.js";
+import multer from "multer";
 
 import indexRouter from "./routes/index.js";
 
@@ -17,6 +18,15 @@ app.use(express.urlencoded({ extended: false }));
 app.use("/static", express.static(resolve("public")));
 
 app.use(uploadFile, checkFileType);
+app.use((req, res, err, next) => {
+  if (err instanceof multer.MulterError) {
+    if (err.code === "LIMIT_FILE_SIZE") {
+      err.message = "MAX_SIZE_FILE_IS_1_MB";
+    }
+  }
+  console.log(err);
+  res.status(500).json(err);
+});
 
 app.use("/", indexRouter);
 
