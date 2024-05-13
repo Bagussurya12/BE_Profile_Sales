@@ -1,6 +1,5 @@
 import express from "express";
 import AuthHandler from "../handlers/AuthHandler.js";
-import UserHandler from "../handlers/userHandler.js";
 import SosmedHandler from "../handlers/SosmedHandler.js";
 
 const router = express.Router();
