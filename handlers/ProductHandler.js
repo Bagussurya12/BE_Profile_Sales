@@ -106,6 +106,9 @@ class ProductHandler {
       }
       const product = await prisma.house.findUnique({
         where: { id: productId, userId: userId },
+        include: {
+          gambar: true,
+        },
       });
       if (!product) {
         throw { code: 404, message: "PRODUCT_NOT_FOUND" };
