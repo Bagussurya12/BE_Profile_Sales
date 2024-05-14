@@ -24,5 +24,6 @@ router.get("/sosmed/:sosmedId", SosmedHandler.getSosmedById);
 // PRODUCT HANDLER
 router.post("/product/:userId", uploadFiles, ProductHandler.addProductHandler);
 router.get("/product/:userId", ProductHandler.getProductHandlerByUserId);
+router.get("/product/:userId/:productId", ProductHandler.getProductById);
 
 export default router;
