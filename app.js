@@ -2,7 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import { PrismaClient } from "@prisma/client";
 import { resolve } from "path";
-import { uploadFile } from "./middlewares/UploadFile.js";
+import { uploadFiles } from "./middlewares/UploadFile.js"; // Hapus ini
 import checkFileType from "./middlewares/CheckType.js";
 import multer from "multer";
 
@@ -17,7 +17,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use("/static", express.static(resolve("public")));
 
-app.use(uploadFile, checkFileType);
+// app.use(uploadFiles); // Hapus ini
+
 app.use((req, res, err, next) => {
   if (err instanceof multer.MulterError) {
     if (err.code === "LIMIT_FILE_SIZE") {

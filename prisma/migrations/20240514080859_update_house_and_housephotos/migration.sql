@@ -1,10 +1,11 @@
 -- CreateTable
 CREATE TABLE "House" (
     "id" TEXT NOT NULL,
-    "harga" DOUBLE PRECISION,
+    "userId" TEXT,
+    "harga" TEXT,
     "tipe_rumah" TEXT,
-    "luas_tanah" DOUBLE PRECISION,
-    "luas_bangunan" DOUBLE PRECISION,
+    "luas_tanah" TEXT,
+    "luas_bangunan" TEXT,
     "jumlah_kamar_tidur" INTEGER,
     "jumlah_kamar_mandi" INTEGER,
     "deskripsi" TEXT,

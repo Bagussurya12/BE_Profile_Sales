@@ -6,6 +6,7 @@ const TYPE_IMAGE = {
   "image/jpeg": "jpeg",
   "image/png": "png",
 };
+
 const storage = multer.diskStorage({
   destination(req, file, cb) {
     cb(null, "public/images");
@@ -26,8 +27,12 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-const maxSize = 1 * 1024 * 1024; //1MB
+const maxSize = 10 * 1024 * 1024; // 10MB
 
-const uploadFile = multer({ storage, fileFilter, limits: { fileSize: maxSize } }).single("image");
+const uploadFiles = multer({
+  storage,
+  fileFilter,
+  limits: { fileSize: maxSize },
+}).array("photos", 10); // Maksimal 10 file, field name 'photos'
 
-export { uploadFile, TYPE_IMAGE };
+export { uploadFiles, TYPE_IMAGE };

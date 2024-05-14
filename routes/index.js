@@ -1,6 +1,9 @@
 import express from "express";
+import UserHandler from "../handlers/UserHandler.js";
 import AuthHandler from "../handlers/AuthHandler.js";
 import SosmedHandler from "../handlers/SosmedHandler.js";
+import ProductHandler from "../handlers/ProductHandler.js";
+import { uploadFiles } from "../middlewares/UploadFile.js";
 
 const router = express.Router();
 
@@ -18,5 +21,7 @@ router.delete("/users/delete/:userId", UserHandler.deleteUserById);
 // SOSMED ROUTE
 router.put("/sosmed/:sosmedId", SosmedHandler.updateSosmedHandler);
 router.get("/sosmed/:sosmedId", SosmedHandler.getSosmedById);
+// PRODUCT HANDLER
+router.post("/product/:userId/add-product", uploadFiles, ProductHandler.addProductHandler);
 
 export default router;

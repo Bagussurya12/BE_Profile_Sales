@@ -59,10 +59,11 @@ model SocialMedia {
 // Model untuk informasi rumah yang dijual
 model House {
   id                String     @id 
-  harga             Float?
+  userId            String?
+  harga             String?
   tipe_rumah        String?
-  luas_tanah        Float?
-  luas_bangunan     Float?
+  luas_tanah        String?
+  luas_bangunan     String?
   jumlah_kamar_tidur Int?
   jumlah_kamar_mandi Int?
   deskripsi         String?
