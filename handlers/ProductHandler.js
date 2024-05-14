@@ -128,6 +128,33 @@ class ProductHandler {
       });
     }
   }
+  async deleteProductHandler(req, res) {
+    try {
+      const productId = req.params.productId;
+      if (!productId) {
+        throw { code: 428, message: "PRODUCT_ID_IS_REQUIRED" };
+      }
+      await prisma.housePicture.deleteMany({
+        where: { houseId: productId },
+      });
+      const product = await prisma.house.delete({
+        where: { id: productId },
+      });
+      return res.status(200).json({
+        status: true,
+        message: "DELETE_PRODUCT_SUCCESS",
+        product,
+      });
+    } catch (error) {
+      if (!error.code) {
+        error.code = 500;
+      }
+      return res.status(500).json({
+        status: false,
+        message: error.message,
+      });
+    }
+  }
 }
 
 export default new ProductHandler();
