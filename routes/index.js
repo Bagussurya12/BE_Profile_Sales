@@ -22,6 +22,7 @@ router.delete("/users/delete/:userId", UserHandler.deleteUserById);
 router.put("/sosmed/:sosmedId", SosmedHandler.updateSosmedHandler);
 router.get("/sosmed/:sosmedId", SosmedHandler.getSosmedById);
 // PRODUCT HANDLER
-router.post("/product/:userId/add-product", uploadFiles, ProductHandler.addProductHandler);
+router.post("/product/:userId", uploadFiles, ProductHandler.addProductHandler);
+router.get("/product/:userId", ProductHandler.getProductHandlerByUserId);
 
 export default router;

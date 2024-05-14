@@ -67,6 +67,64 @@ class ProductHandler {
       });
     }
   }
+  async getProductHandlerByUserId(req, res) {
+    try {
+      if (!req.params.userId) {
+        throw { code: 428, message: "ID_USER_IS_REQUIRED" };
+      }
+      const userId = req.params.userId;
+      const products = await prisma.house.findMany({
+        where: { userId: userId },
+        include: {
+          gambar: true,
+        },
+      });
+
+      if (!products) {
+        throw { code: 404, message: "PRODUCT_NOT_FOUND" };
+      }
+      return res.status(200).json({
+        status: true,
+        message: "SUCCESS_GET_PRODUCT",
+        Products: products,
+      });
+    } catch (error) {
+      console.error(error);
+      // Return response error
+      return res.status(error.code || 500).json({
+        status: false,
+        message: error.message || "Internal Server Error",
+      });
+    }
+  }
+  async getProductById(req, res) {
+    try {
+      const userId = req.params.userId;
+      const productId = req.params.productId;
+      if (!userId && !productId) {
+        throw { code: 428, message: "ID_IS_REQUIRED" };
+      }
+      const product = await prisma.house.findUnique({
+        where: { id: productId, userId: userId },
+      });
+      if (!product) {
+        throw { code: 404, message: "PRODUCT_NOT_FOUND" };
+      }
+      return res.status(200).json({
+        status: true,
+        message: "SUCCESS_GET_PRODUCT",
+        product: product,
+      });
+    } catch (error) {
+      if (!error.code) {
+        error.code = 500;
+      }
+      return res.status(500).json({
+        status: false,
+        message: error.message,
+      });
+    }
+  }
 }
 
 export default new ProductHandler();
