@@ -3,6 +3,7 @@ import UserHandler from "../handlers/UserHandler.js";
 import AuthHandler from "../handlers/AuthHandler.js";
 import SosmedHandler from "../handlers/SosmedHandler.js";
 import ProductHandler from "../handlers/ProductHandler.js";
+import ProfileHandler from "../handlers/ProfileHandler.js";
 import { uploadFiles } from "../middlewares/UploadFile.js";
 
 const router = express.Router();
@@ -11,6 +12,8 @@ const router = express.Router();
 router.post("/register", AuthHandler.register);
 router.post("/login", AuthHandler.login);
 router.post("/refresh-token", AuthHandler.refreshToken);
+// PROFILE HANDLER
+router.put("/Profile/:userId", uploadFiles, ProfileHandler.updateProfileHandler);
 // USERS ROUTE
 router.get("/Users", UserHandler.getAllUserHandler);
 router.get("/users/:userId", UserHandler.getUserById);

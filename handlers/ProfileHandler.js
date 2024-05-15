@@ -1,42 +1,58 @@
 import { PrismaClient } from "@prisma/client";
+import { parse, isValid } from "date-fns";
 
 const prisma = new PrismaClient();
 
 class ProfileHandler {
   async updateProfileHandler(req, res) {
     try {
-      //   if (!req.params.nickName) {
-      //     throw { code: 400, message: "NICK_NAME_IS_REQUIRED" };
-      //   }
       if (!req.params.userId) {
-        throw { code: 400, message: "NICK_NAME_IS_REQUIRED" };
+        throw { code: 400, message: "USER_ID_IS_REQUIRED" };
       }
-      const { fullName, dateOfBirth, gender, address, profilePhoto, bio } = req.body;
 
-      if (!fullName || !dateOfBirth || !gender || !address || !profilePhoto || !bio) {
+      const { fullName, gender, address, bio, dateOfBirth } = req.body;
+
+      if (!fullName || !gender || !address || !bio || !dateOfBirth) {
         throw { code: 428, message: "MISSING_REQUIRED_FIELDS" };
       }
-      const profile = prisma.profile.findUnique({
-        where: { id: req.params.userId },
+
+      const profile = await prisma.profile.findUnique({
+        where: { userId: req.params.userId },
       });
+
       if (!profile) {
         throw { code: 428, message: "PROFILE_NOT_FOUND" };
       }
-      const updateProfile = await prisma.profile.update({
-        where: { id: req.params.userId },
+
+      const files = req.files;
+
+      let profilePhoto = null;
+      if (files && files.length > 0) {
+        profilePhoto = files[0].filename;
+      }
+
+      const parsedDateOfBirth = parse(dateOfBirth, "dd/MM/yyyy", new Date());
+
+      if (!isValid(parsedDateOfBirth)) {
+        throw { code: 428, message: "INVALID_DATE_OF_BIRTH" };
+      }
+
+      const updatedProfile = await prisma.profile.update({
+        where: { userId: req.params.userId },
         data: {
           fullName: fullName,
-          dateOfBirth: dateOfBirth,
           gender: gender,
           address: address,
+          dateOfBirth: parsedDateOfBirth.toISOString(), // Mengubah format dateOfBirth ke ISO-8601
           profilePhoto: profilePhoto,
           bio: bio,
         },
       });
-      res.status.json({
+
+      res.status(200).json({
         status: true,
         message: "UPDATE_PROFILE_SUCCESS",
-        profile: updateProfile,
+        profile: updatedProfile,
       });
     } catch (error) {
       if (!error.code) {

@@ -1,14 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -19,33 +8,37 @@ datasource db {
 }
 
 model User {
-  id        String   @id
-  fullname  String
-  email     String   @unique
-  password  String
-  status    String?
-  nick_name String   @unique
-  level     String
-  profile   Profile?
+  id               String          @id @default(uuid())
+  fullname         String
+  email            String          @unique
+  password         String
+  status           String?
+  nick_name        String          @unique
+  level            String
+  profile          Profile?
+  houses           House[]
+  profilePicture   ProfilePicture? @relation(fields: [profilePictureId], references: [id])
+  profilePictureId String?
 }
 
 model Profile {
-  id           String       @id
-  userId       String       @unique
-  fullName     String
-  dateOfBirth  DateTime?
-  gender       String?
-  address      String?
-  profilePhoto String?
-  bio          String?
-  created_at   DateTime     @default(now())
-  updated_at   DateTime     @updatedAt
-  user         User         @relation(fields: [userId], references: [id])
-  socialMedia  SocialMedia? 
+  id             String          @id @default(uuid())
+  userId         String          @unique
+  fullName       String
+  dateOfBirth    DateTime?
+  gender         String?
+  address        String?
+  profilePhoto   String?
+  bio            String?
+  created_at     DateTime        @default(now())
+  updated_at     DateTime        @updatedAt
+  user           User            @relation(fields: [userId], references: [id])
+  socialMedia    SocialMedia?
+  profilePicture ProfilePicture?
 }
 
 model SocialMedia {
-  id        String  @id
+  id        String   @id @default(uuid())
   profileId String?  @unique
   facebook  String?
   twitter   String?
@@ -55,28 +48,32 @@ model SocialMedia {
   profile   Profile? @relation(fields: [profileId], references: [id])
 }
 
-
-// Model untuk informasi rumah yang dijual
 model House {
-  id                String     @id 
-  userId            String?
-  harga             String?
-  tipe_rumah        String?
-  luas_tanah        String?
-  luas_bangunan     String?
+  id                 String         @id @default(uuid())
+  userId             String?
+  harga              String?
+  tipe_rumah         String?
+  luas_tanah         String?
+  luas_bangunan      String?
   jumlah_kamar_tidur Int?
   jumlah_kamar_mandi Int?
-  deskripsi         String?
-  spesifikasi       String?
-
-  // Relasi dengan model GambarRumah
-  gambar            HousePicture[]
+  deskripsi          String?
+  spesifikasi        String?
+  gambar             HousePicture[]
+  user               User?          @relation(fields: [userId], references: [id])
 }
 
-// Model untuk menyimpan gambar rumah
 model HousePicture {
-  id        String      @id
-  house     House       @relation(fields: [houseId], references: [id])
-  houseId   String
+  id         String @id @default(uuid())
+  houseId    String
   gambar_url String
+  house      House  @relation(fields: [houseId], references: [id])
+}
+
+model ProfilePicture {
+  id         String  @id @default(uuid())
+  profileId  String  @unique
+  gambar_url String?
+  profile    Profile @relation(fields: [profileId], references: [id])
+  User       User[]
 }
