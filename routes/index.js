@@ -15,16 +15,18 @@ router.post("/login", AuthHandler.login);
 router.post("/refresh-token", AuthHandler.refreshToken);
 // PROFILE HANDLER
 router.put("/Profile/:userId", uploadFiles, ProfileHandler.updateProfileHandler);
+router.get("/profile/:userId", ProfileHandler.getProfileHandlerByUserId);
 // USERS ROUTE
-router.get("/Users", jwtAuth(), UserHandler.getAllUserHandler);
-router.get("/users/:userId", jwtAuth(), UserHandler.getUserById);
-router.get("/user/:nickName", jwtAuth(), UserHandler.getUserByNickName);
-router.post("/Add-User", jwtAuth(), UserHandler.addUserHandler);
-router.put("/Update-User/:userId", jwtAuth(), UserHandler.updateUserHandler);
-router.delete("/users/delete/:userId", jwtAuth(), UserHandler.deleteUserById);
+router.get("/Users", UserHandler.getAllUserHandler);
+router.get("/users/:userId", UserHandler.getUserById);
+router.get("/user/:nickName", UserHandler.getUserByNickName);
+router.post("/Add-User", UserHandler.addUserHandler);
+router.put("/Update-User/:userId", UserHandler.updateUserHandler);
+router.delete("/users/delete/:userId", UserHandler.deleteUserById);
 // SOSMED ROUTE
-router.put("/sosmed/:sosmedId", jwtAuth(), SosmedHandler.updateSosmedHandler);
-router.get("/sosmed/:sosmedId", jwtAuth(), SosmedHandler.getSosmedById);
+router.put("/sosmed/:sosmedId", SosmedHandler.updateSosmedHandler);
+router.get("/sosmed/:sosmedId", SosmedHandler.getSosmedById);
+router.get("/sosmed/:profileId", SosmedHandler.getSosmedByProfileId);
 // PRODUCT HANDLER
 router.post("/product/:userId", uploadFiles, ProductHandler.addProductHandler);
 router.get("/product/:userId", ProductHandler.getProductHandlerByUserId);

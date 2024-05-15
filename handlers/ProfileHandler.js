@@ -64,6 +64,33 @@ class ProfileHandler {
       });
     }
   }
+  async getProfileHandlerByUserId(req, res) {
+    try {
+      const userId = req.params.userId;
+      if (!userId) {
+        throw { code: 428, message: "USER_ID_IS_REQUIRED" };
+      }
+      const profile = await prisma.profile.findUnique({
+        where: { userId: userId },
+      });
+      if (!profile) {
+        throw { code: 428, message: "PROFILE_NOT_FOUND" };
+      }
+      return res.status(200).json({
+        status: true,
+        message: "SUCCESS_GET_PROFILE",
+        profile: profile,
+      });
+    } catch {
+      if (!error.code) {
+        error.code = 500;
+      }
+      return res.status(500).json({
+        status: false,
+        message: error.message,
+      });
+    }
+  }
 }
 
 export default new ProfileHandler();

@@ -67,6 +67,33 @@ class sosmedHandler {
       });
     }
   }
+  async getSosmedByProfileId(req, res) {
+    try {
+      if (!req.params.profileId) {
+        throw { code: 428, message: "USER_ID_IS_REQUIRED" };
+      }
+      const sosmedUser = await prisma.socialMedia.findUnique({
+        where: { profileId: req.params.profileId },
+      });
+
+      if (!sosmedUser) {
+        throw { code: 404, message: "USER_NOT_sFOUND" };
+      }
+      return res.status(200).json({
+        status: true,
+        message: "GET_SOSMED_SUCCESS",
+        sosial_media: sosmedUser,
+      });
+    } catch (error) {
+      if (!error.code) {
+        error.code = 500;
+      }
+      return res.status(500).json({
+        status: false,
+        message: error.message,
+      });
+    }
+  }
 }
 
 export default new sosmedHandler();
