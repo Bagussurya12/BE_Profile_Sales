@@ -37,4 +37,6 @@ router.delete("/product/:productId", ProductHandler.deleteProductHandler);
 // ARTICLE ROUTE
 router.post("/article", uploadFiles, ArticleHandler.addArticle);
 router.get("/article/:articleId", ArticleHandler.getArticleById);
+router.get("/article", ArticleHandler.getAllArticle);
+
 export default router;

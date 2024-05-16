@@ -71,6 +71,36 @@ class ArticleHandler {
       });
     }
   }
+  async getAllArticle(req, res) {
+    try {
+      const { page = 1, perPage = 10 } = req.query;
+      const skip = (page - 1) * perPage;
+      // const users = await prisma.user.findMany({
+      //   skip: skip,
+      //   take: perPage,
+      // });
+      const article = await prisma.article.findMany({
+        skip: skip,
+        take: perPage,
+      });
+      if (!article || article.length === 0) {
+        throw { code: 404, message: "ARTICLE_NOT_FOUND" };
+      }
+      return res.status(200).json({
+        status: true,
+        message: "SUCCESS_GET_ALL_ARTICLE",
+        data: article,
+      });
+    } catch (error) {
+      if (!error.code) {
+        error.code = 500;
+      }
+      return res.status(500).json({
+        status: false,
+        message: error.message,
+      });
+    }
+  }
 }
 
 export default new ArticleHandler();
