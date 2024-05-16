@@ -17,6 +17,7 @@ model User {
   level            String
   profile          Profile?
   houses           House[]
+  articles         Article[] 
 
 }
 
@@ -69,4 +70,12 @@ model HousePicture {
   house      House  @relation(fields: [houseId], references: [id])
 }
 
-
+model Article {
+  id        String   @id @default(uuid())
+  userId    String?
+  title     String
+  photo     String
+  content   String
+  createdAt DateTime @default(now())
+  user      User?    @relation(fields: [userId], references: [id])
+}
