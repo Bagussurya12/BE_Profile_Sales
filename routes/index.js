@@ -4,6 +4,8 @@ import AuthHandler from "../handlers/AuthHandler.js";
 import SosmedHandler from "../handlers/SosmedHandler.js";
 import ProductHandler from "../handlers/ProductHandler.js";
 import ProfileHandler from "../handlers/ProfileHandler.js";
+import ArticleHandler from "../handlers/ArticleHandler.js";
+
 import { uploadFiles } from "../middlewares/UploadFile.js";
 import jwtAuth from "../middlewares/JwtAuth.js";
 
@@ -32,5 +34,7 @@ router.post("/product/:userId", uploadFiles, ProductHandler.addProductHandler);
 router.get("/product/:userId", ProductHandler.getProductHandlerByUserId);
 router.get("/product/:userId/:productId", ProductHandler.getProductById);
 router.delete("/product/:productId", ProductHandler.deleteProductHandler);
-
+// ARTICLE ROUTE
+router.post("/article", uploadFiles, ArticleHandler.addArticle);
+router.get("/article/:articleId", ArticleHandler.getArticleById);
 export default router;

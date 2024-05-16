@@ -74,7 +74,7 @@ model Article {
   id        String   @id @default(uuid())
   userId    String?
   title     String
-  photo     String
+  photos    String? // Menggunakan array of strings untuk menyimpan path foto
   content   String
   createdAt DateTime @default(now())
   user      User?    @relation(fields: [userId], references: [id])
