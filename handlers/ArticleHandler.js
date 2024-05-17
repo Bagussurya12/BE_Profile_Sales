@@ -103,7 +103,7 @@ class ArticleHandler {
   }
   async deleteArticleById(req, res) {
     try {
-      const articleId = req.params.id;
+      const articleId = req.params.articleId;
       if (!articleId) {
         throw { code: 428, message: "ID_IS_REQUIRED" };
       }
