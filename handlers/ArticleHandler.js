@@ -101,6 +101,33 @@ class ArticleHandler {
       });
     }
   }
+  async deleteArticleById(req, res) {
+    try {
+      const articleId = req.params.id;
+      if (!articleId) {
+        throw { code: 428, message: "ID_IS_REQUIRED" };
+      }
+      const deleteArticle = await prisma.article.delete({
+        where: { id: articleId },
+      });
+      if (!deleteArticle) {
+        throw { code: 500, message: "DELETE_ARTICLE_FAILED" };
+      }
+      return res.status(200).json({
+        status: true,
+        message: "SUCESS_DELETE_ARTICLE",
+        deleteArticle,
+      });
+    } catch (error) {
+      if (!error.code) {
+        error.code = 500;
+      }
+      return res.status(500).json({
+        status: false,
+        message: error.message,
+      });
+    }
+  }
 }
 
 export default new ArticleHandler();
