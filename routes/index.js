@@ -14,31 +14,31 @@ const router = express.Router();
 // AUTH ROUTE
 router.post("/register", AuthHandler.register);
 router.post("/login", AuthHandler.login);
-router.post("/refresh-token", AuthHandler.refreshToken);
+router.post("/refresh-token", jwtAuth(), AuthHandler.refreshToken);
 // PROFILE HANDLER
-router.put("/Profile/:userId", uploadFiles, ProfileHandler.updateProfileHandler);
-router.get("/profile/:userId", ProfileHandler.getProfileHandlerByUserId);
+router.put("/Profile/:userId", jwtAuth(), uploadFiles, ProfileHandler.updateProfileHandler);
+router.get("/profile/:userId", jwtAuth(), ProfileHandler.getProfileHandlerByUserId);
 // USERS ROUTE
-router.get("/Users", UserHandler.getAllUserHandler);
-router.get("/users/:userId", UserHandler.getUserById);
-router.get("/user/:nickName", UserHandler.getUserByNickName);
-router.post("/Add-User", UserHandler.addUserHandler);
-router.put("/Update-User/:userId", UserHandler.updateUserHandler);
-router.delete("/users/delete/:userId", UserHandler.deleteUserById);
+router.get("/Users", jwtAuth(), UserHandler.getAllUserHandler);
+router.get("/users/:userId", jwtAuth(), UserHandler.getUserById);
+router.get("/user/:nickName", jwtAuth(), UserHandler.getUserByNickName);
+router.post("/Add-User", jwtAuth(), UserHandler.addUserHandler);
+router.put("/Update-User/:userId", jwtAuth(), UserHandler.updateUserHandler);
+router.delete("/users/delete/:userId", jwtAuth(), UserHandler.deleteUserById);
 // SOSMED ROUTE
-router.put("/sosmed/:sosmedId", SosmedHandler.updateSosmedHandler);
+router.put("/sosmed/:sosmedId", jwtAuth(), SosmedHandler.updateSosmedHandler);
 router.get("/sosmed/:sosmedId", SosmedHandler.getSosmedById);
 router.get("/sosmed/:profileId", SosmedHandler.getSosmedByProfileId);
 // PRODUCT HANDLER
-router.post("/product/:userId", uploadFiles, ProductHandler.addProductHandler);
+router.post("/product/:userId", jwtAuth(), uploadFiles, ProductHandler.addProductHandler);
 router.get("/product/:userId", ProductHandler.getProductHandlerByUserId);
 router.get("/product/:userId/:productId", ProductHandler.getProductById);
-router.delete("/product/:productId", ProductHandler.deleteProductHandler);
+router.delete("/product/:productId", jwtAuth(), ProductHandler.deleteProductHandler);
 // ARTICLE ROUTE
-router.post("/article", uploadFiles, ArticleHandler.addArticle);
-router.get("/article/:articleId", ArticleHandler.getArticleById);
+router.post("/article", jwtAuth(), uploadFiles, ArticleHandler.addArticle);
+router.get("/article/:articleId", jwtAuth(), ArticleHandler.getArticleById);
 router.get("/article", ArticleHandler.getAllArticle);
-router.put("/article/:articleId", uploadFiles, ArticleHandler.updateArticleById);
-router.delete("/article/:articleId", ArticleHandler.deleteArticleById);
+router.put("/article/:articleId", jwtAuth(), uploadFiles, ArticleHandler.updateArticleById);
+router.delete("/article/:articleId", jwtAuth(), ArticleHandler.deleteArticleById);
 
 export default router;
