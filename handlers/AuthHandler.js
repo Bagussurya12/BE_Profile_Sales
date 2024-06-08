@@ -131,6 +131,8 @@ class AuthHandler {
         message: "LOGIN_SUCCESS",
         accessToken,
         refreshToken,
+        fullname: user.fullname,
+        level: user.level,
       });
     } catch (error) {
       console.error(error);

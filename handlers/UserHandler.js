@@ -36,9 +36,9 @@ class UserHandler {
 
   async addUserHandler(req, res) {
     try {
-      const { fullname, email, password, status, level, nickName } = req.body;
+      const { fullname, email, password, level, nickName } = req.body;
 
-      if (!fullname || !email || !password || !status || !level || !nickName) {
+      if (!fullname || !email || !password || !level || !nickName) {
         throw { code: 400, message: "MISSING_REQUIRED_FIELDS" };
       }
 
@@ -70,7 +70,7 @@ class UserHandler {
           fullname: fullname,
           email: email,
           password: hash,
-          status: status,
+          status: "active",
           level: level,
           nick_name: nickName,
         },
@@ -110,9 +110,6 @@ class UserHandler {
       if (!nickName) {
         throw { code: 428, message: "NICK_NAME_IS_REQUIRED" };
       }
-      if (!password) {
-        throw { code: 428, message: "PASSWORD_IS_REQUIRED" };
-      }
       if (!level) {
         throw { code: 428, message: "LEVEL_IS_REQUIRED" };
       }
@@ -128,7 +125,6 @@ class UserHandler {
       let emailExists = false;
       let nickNameExists = false;
 
-      // Jika email baru tidak sama dengan yang lama, periksa keberadaannya
       if (email !== user.email) {
         emailExists = await isEmailExist(email);
         if (emailExists) {
@@ -136,7 +132,6 @@ class UserHandler {
         }
       }
 
-      // Jika nickname baru tidak sama dengan yang lama, periksa keberadaannya
       if (nickName !== user.nick_name) {
         nickNameExists = await isNickNameExist(nickName);
         if (nickNameExists) {
@@ -144,18 +139,22 @@ class UserHandler {
         }
       }
 
-      const salt = await bcrypt.genSalt(10);
-      const hash = await bcrypt.hash(password, salt);
+      const dataToUpdate = {
+        fullname,
+        email,
+        nick_name: nickName,
+        level,
+      };
+
+      if (password) {
+        const salt = await bcrypt.genSalt(10);
+        const hash = await bcrypt.hash(password, salt);
+        dataToUpdate.password = hash;
+      }
 
       const updatedUser = await prisma.user.update({
         where: { id: req.params.userId },
-        data: {
-          fullname: fullname,
-          email: email,
-          password: hash,
-          nick_name: nickName,
-          level: level,
-        },
+        data: dataToUpdate,
       });
 
       res.status(200).json({
@@ -167,12 +166,14 @@ class UserHandler {
       if (!error.code) {
         error.code = 500;
       }
+      console.log(error);
       return res.status(error.code || 500).json({
         status: false,
         message: error.message || "INTERNAL_SERVER_ERROR",
       });
     }
   }
+
   async getUserById(req, res) {
     try {
       if (!req.params.userId) {
