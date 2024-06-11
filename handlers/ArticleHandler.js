@@ -142,24 +142,34 @@ class ArticleHandler {
         photos = files[0].filename;
       }
 
-      const article = await prisma.article.update({
+      // Fetch the existing article to get the current photo value
+      const existingArticle = await prisma.article.findUnique({
+        where: { id: articleId },
+      });
+
+      if (!existingArticle) {
+        throw { code: 404, message: "ARTICLE_NOT_FOUND" };
+      }
+
+      const updatedArticle = await prisma.article.update({
         where: { id: articleId },
         data: {
           title: title,
-          photos: photos,
           content: content,
+          photos: photos || existingArticle.photos, // Use the existing photo if no new photo is uploaded
         },
       });
 
-      if (!article) {
+      if (!updatedArticle) {
         throw { code: 500, message: "UPDATE_ARTICLE_FAILED" };
       }
       return res.status(200).json({
         status: true,
         message: "UPDATE_ARTICLE_SUCCESS",
-        article: article,
+        article: updatedArticle,
       });
     } catch (error) {
+      console.log(error);
       if (!error.code) {
         error.code = 500;
       }

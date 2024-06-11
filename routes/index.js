@@ -36,9 +36,9 @@ router.get("/product/:userId/:productId", ProductHandler.getProductById);
 router.delete("/product/:productId", jwtAuth(), ProductHandler.deleteProductHandler);
 // ARTICLE ROUTE
 router.post("/article", uploadFiles, ArticleHandler.addArticle);
-router.get("/article/:articleId", jwtAuth(), ArticleHandler.getArticleById);
+router.get("/article/:articleId", ArticleHandler.getArticleById);
 router.get("/article", ArticleHandler.getAllArticle);
-router.put("/article/:articleId", jwtAuth(), uploadFiles, ArticleHandler.updateArticleById);
-router.delete("/article/:articleId", jwtAuth(), ArticleHandler.deleteArticleById);
+router.put("/article/:articleId", uploadFiles, ArticleHandler.updateArticleById);
+router.delete("/article/:articleId", ArticleHandler.deleteArticleById);
 
 export default router;
