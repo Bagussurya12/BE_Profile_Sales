@@ -16,8 +16,8 @@ router.post("/register", AuthHandler.register);
 router.post("/login", AuthHandler.login);
 router.post("/refresh-token", jwtAuth(), AuthHandler.refreshToken);
 // PROFILE HANDLER
-router.put("/Profile/:userId", jwtAuth(), uploadFiles, ProfileHandler.updateProfileHandler);
-router.get("/profile/:userId", jwtAuth(), ProfileHandler.getProfileHandlerByUserId);
+router.put("/Profile/:userId", uploadFiles, ProfileHandler.updateProfileHandler);
+router.get("/Profile/:userId", ProfileHandler.getProfileHandlerByUserId);
 // USERS ROUTE
 router.get("/Users", UserHandler.getAllUserHandler);
 router.get("/users/:userId", UserHandler.getUserById);
@@ -26,16 +26,16 @@ router.post("/Add-User", UserHandler.addUserHandler);
 router.put("/users/:userId", UserHandler.updateUserHandler);
 router.delete("/users/:userId", UserHandler.deleteUserById);
 // SOSMED ROUTE
-router.put("/sosmed/:sosmedId", jwtAuth(), SosmedHandler.updateSosmedHandler);
+router.put("/sosmed/:sosmedId", SosmedHandler.updateSosmedHandler);
 router.get("/sosmed/:sosmedId", SosmedHandler.getSosmedById);
-router.get("/sosmed/:profileId", SosmedHandler.getSosmedByProfileId);
+router.get("/sosmeds/:profileId", SosmedHandler.getSosmedByProfileId);
 // PRODUCT HANDLER
 router.post("/product/:userId", jwtAuth(), uploadFiles, ProductHandler.addProductHandler);
 router.get("/product/:userId", ProductHandler.getProductHandlerByUserId);
 router.get("/product/:userId/:productId", ProductHandler.getProductById);
 router.delete("/product/:productId", jwtAuth(), ProductHandler.deleteProductHandler);
 // ARTICLE ROUTE
-router.post("/article", jwtAuth(), uploadFiles, ArticleHandler.addArticle);
+router.post("/article", uploadFiles, ArticleHandler.addArticle);
 router.get("/article/:articleId", jwtAuth(), ArticleHandler.getArticleById);
 router.get("/article", ArticleHandler.getAllArticle);
 router.put("/article/:articleId", jwtAuth(), uploadFiles, ArticleHandler.updateArticleById);

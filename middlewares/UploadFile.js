@@ -33,6 +33,6 @@ const uploadFiles = multer({
   storage,
   fileFilter,
   limits: { fileSize: maxSize },
-}).array("photos", 10); // Maksimal 10 file, field name 'photos'
+}).array("photos", 10); // Field name 'photos'
 
 export { uploadFiles, TYPE_IMAGE };

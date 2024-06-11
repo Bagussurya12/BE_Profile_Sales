@@ -69,20 +69,19 @@ class sosmedHandler {
   }
   async getSosmedByProfileId(req, res) {
     try {
-      if (!req.params.profileId) {
-        throw { code: 428, message: "USER_ID_IS_REQUIRED" };
+      const profileId = req.params.profileId;
+      if (!profileId) {
+        throw { code: 428, message: "PROFILE_ID_IS_REQUIRED" };
       }
-      const sosmedUser = await prisma.socialMedia.findUnique({
+
+      const sosmed = await prisma.socialMedia.findUnique({
         where: { profileId: req.params.profileId },
       });
 
-      if (!sosmedUser) {
-        throw { code: 404, message: "USER_NOT_sFOUND" };
-      }
       return res.status(200).json({
         status: true,
         message: "GET_SOSMED_SUCCESS",
-        sosial_media: sosmedUser,
+        sosmed: sosmed,
       });
     } catch (error) {
       if (!error.code) {
@@ -91,38 +90,6 @@ class sosmedHandler {
       return res.status(500).json({
         status: false,
         message: error.message,
-      });
-    }
-  }
-  async getSosmedByUserId(req, res) {
-    try {
-      if (!req.params.userId) {
-        throw { code: 428, message: "USER_ID_IS_REQUIRED" };
-      }
-
-      const profile = await prisma.profile.findUnique({
-        where: { userId: req.params.userId },
-        include: {
-          socialMedia: true,
-        },
-      });
-
-      if (!profile || !profile.socialMedia) {
-        throw { code: 404, message: "SOSMED_NOT_FOUND" };
-      }
-
-      return res.status(200).json({
-        status: true,
-        message: "GET_SOSMED_SUCCESS",
-        sosmed: profile.socialMedia,
-      });
-    } catch (error) {
-      if (!error.code) {
-        error.code = 500;
-      }
-      return res.status(error.code || 500).json({
-        status: false,
-        message: error.message || "INTERNAL_SERVER_ERROR",
       });
     }
   }

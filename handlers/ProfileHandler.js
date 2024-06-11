@@ -31,6 +31,7 @@ class ProfileHandler {
         profilePhoto = files[0].filename;
       }
 
+      // Parse dateOfBirth from dd/MM/yyyy format
       const parsedDateOfBirth = parse(dateOfBirth, "dd/MM/yyyy", new Date());
 
       if (!isValid(parsedDateOfBirth)) {
@@ -43,7 +44,7 @@ class ProfileHandler {
           fullName: fullName,
           gender: gender,
           address: address,
-          dateOfBirth: parsedDateOfBirth.toISOString(), // Mengubah format dateOfBirth ke ISO-8601
+          dateOfBirth: parsedDateOfBirth.toISOString(), // Convert to ISO-8601
           profilePhoto: profilePhoto,
           bio: bio,
         },
@@ -55,6 +56,7 @@ class ProfileHandler {
         profile: updatedProfile,
       });
     } catch (error) {
+      console.log(error);
       if (!error.code) {
         error.code = 500;
       }
@@ -81,7 +83,7 @@ class ProfileHandler {
         message: "SUCCESS_GET_PROFILE",
         profile: profile,
       });
-    } catch {
+    } catch (error) {
       if (!error.code) {
         error.code = 500;
       }
