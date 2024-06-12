@@ -51,6 +51,7 @@ model SocialMedia {
 model House {
   id                 String         @id @default(uuid())
   userId             String?
+  title              String?
   harga              String?
   tipe_rumah         String?
   luas_tanah         String?

@@ -155,6 +155,33 @@ class ProductHandler {
       });
     }
   }
+  async getAllProductHandler(req, res) {
+    try {
+      const { page = 1, perPage = 10 } = req.query;
+      const skip = (page - 1) * perPage;
+
+      const product = await prisma.house.findMany({
+        skip: skip,
+        take: perPage,
+      });
+      if (!product || product.length === 0) {
+        throw { code: 404, message: "PRODUCT_NOT_FOUND" };
+      }
+      return res.status(200).json({
+        status: true,
+        message: "SUCCESS_GET_ALL_PRODUCT",
+        products: product,
+      });
+    } catch (error) {
+      if (!error.code) {
+        error.code = 500;
+      }
+      return res.status(500).json({
+        status: false,
+        message: error.message,
+      });
+    }
+  }
 }
 
 export default new ProductHandler();

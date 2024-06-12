@@ -34,6 +34,7 @@ router.post("/product/:userId", jwtAuth(), uploadFiles, ProductHandler.addProduc
 router.get("/product/:userId", ProductHandler.getProductHandlerByUserId);
 router.get("/product/:userId/:productId", ProductHandler.getProductById);
 router.delete("/product/:productId", jwtAuth(), ProductHandler.deleteProductHandler);
+router.get("/product", ProductHandler.getAllProductHandler);
 // ARTICLE ROUTE
 router.post("/article", uploadFiles, ArticleHandler.addArticle);
 router.get("/article/:articleId", ArticleHandler.getArticleById);
