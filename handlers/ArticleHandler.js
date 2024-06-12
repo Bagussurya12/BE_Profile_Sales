@@ -93,6 +93,7 @@ class ArticleHandler {
       });
     } catch (error) {
       if (!error.code) {
+        s;
         error.code = 500;
       }
       return res.status(500).json({
