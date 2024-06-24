@@ -18,6 +18,7 @@ router.post("/refresh-token", jwtAuth(), AuthHandler.refreshToken);
 // PROFILE HANDLER
 router.put("/Profile/:userId", uploadFiles, ProfileHandler.updateProfileHandler);
 router.get("/Profile/:userId", ProfileHandler.getProfileHandlerByUserId);
+router.get("/Profil/:nickName", ProfileHandler.getProfileHandlerByNickName);
 // USERS ROUTE
 router.get("/Users", UserHandler.getAllUserHandler);
 router.get("/users/:userId", UserHandler.getUserById);

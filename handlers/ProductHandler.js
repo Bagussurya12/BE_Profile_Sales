@@ -161,8 +161,9 @@ class ProductHandler {
       const skip = (page - 1) * perPage;
 
       const product = await prisma.house.findMany({
-        skip: skip,
-        take: perPage,
+        include: {
+          gambar: true,
+        },
       });
       if (!product || product.length === 0) {
         throw { code: 404, message: "PRODUCT_NOT_FOUND" };

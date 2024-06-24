@@ -46,7 +46,7 @@ class UserHandler {
         throw { code: 409, message: "EMAIL_INVALID" };
       }
 
-      if (password.length <= 7) {
+      if (password.length < 7) {
         throw { code: 400, message: "PASSWORD_MINIMUM_8_CHARACTER" };
       }
 
@@ -61,8 +61,12 @@ class UserHandler {
       }
 
       const id = `User-${nanoid(12)}`;
+      const profileId = `UserProfile-${nanoid(8)}`;
+      const sosMedId = `sosmed-${nanoid(8)}`;
+
       const salt = await bcrypt.genSalt(10);
       const hash = await bcrypt.hash(password, salt);
+      const defaultPhoto = `default.png`;
 
       const user = await prisma.user.create({
         data: {
@@ -73,6 +77,25 @@ class UserHandler {
           status: "active",
           level: level,
           nick_name: nickName,
+          profile: {
+            create: {
+              id: profileId,
+              fullName: fullname,
+              profilePhoto: defaultPhoto,
+              socialMedia: {
+                create: {
+                  id: sosMedId,
+                },
+              },
+            },
+          },
+        },
+        include: {
+          profile: {
+            include: {
+              socialMedia: true,
+            },
+          },
         },
       });
 
@@ -84,6 +107,10 @@ class UserHandler {
         status: true,
         message: "ADD_USER_SUCCESS",
         user: user,
+        name: user.fullname,
+        userId: user.id,
+        profileId: profileId,
+        sosmedId: sosMedId,
       });
     } catch (error) {
       console.error(error);
@@ -205,26 +232,46 @@ class UserHandler {
       if (!req.params.nickName) {
         throw { code: 428, message: "ID_IS_REQUIRED" };
       }
+
       const user = await prisma.user.findUnique({
         where: { nick_name: req.params.nickName },
+        include: {
+          profile: {
+            include: {
+              socialMedia: true,
+            },
+          },
+        },
       });
+
       if (!user) {
         throw { code: 404, message: "USER_NOT_FOUND" };
       }
+
+      // Menyusun data yang diperlukan
+      const userData = {
+        fullName: user.profile?.fullName,
+        photos: user.profile?.profilePhoto,
+        bio: user.profile?.bio,
+        socialMedia: user.profile?.socialMedia,
+      };
+
       return res.status(200).json({
         status: true,
-        user: user,
+        user: userData,
       });
     } catch (error) {
+      console.log(error);
       if (!error.code) {
         error.code = 500;
       }
-      return res.status(500).json({
+      return res.status(error.code).json({
         status: false,
         message: error.message,
       });
     }
   }
+
   async deleteUserById(req, res) {
     try {
       if (!req.params.userId) {

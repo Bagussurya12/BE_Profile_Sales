@@ -29,9 +29,10 @@ class ProfileHandler {
       let profilePhoto = null;
       if (files && files.length > 0) {
         profilePhoto = files[0].filename;
+      } else {
+        profilePhoto = profile.profilePhoto; // Keep the existing photo if no new photo uploaded
       }
 
-      // Parse dateOfBirth from dd/MM/yyyy format
       const parsedDateOfBirth = parse(dateOfBirth, "dd/MM/yyyy", new Date());
 
       if (!isValid(parsedDateOfBirth)) {
@@ -44,7 +45,7 @@ class ProfileHandler {
           fullName: fullName,
           gender: gender,
           address: address,
-          dateOfBirth: parsedDateOfBirth.toISOString(), // Convert to ISO-8601
+          dateOfBirth: parsedDateOfBirth.toISOString(),
           profilePhoto: profilePhoto,
           bio: bio,
         },
@@ -66,6 +67,7 @@ class ProfileHandler {
       });
     }
   }
+
   async getProfileHandlerByUserId(req, res) {
     try {
       const userId = req.params.userId;
@@ -74,6 +76,33 @@ class ProfileHandler {
       }
       const profile = await prisma.profile.findUnique({
         where: { userId: userId },
+      });
+      if (!profile) {
+        throw { code: 428, message: "PROFILE_NOT_FOUND" };
+      }
+      return res.status(200).json({
+        status: true,
+        message: "SUCCESS_GET_PROFILE",
+        profile: profile,
+      });
+    } catch (error) {
+      if (!error.code) {
+        error.code = 500;
+      }
+      return res.status(500).json({
+        status: false,
+        message: error.message,
+      });
+    }
+  }
+  async getProfileHandlerByNickName(req, res) {
+    try {
+      const nickName = req.params.nickName;
+      if (!nickName) {
+        throw { code: 428, message: "NICK_NAME_IS_REQUIRED" };
+      }
+      const profile = await prisma.profile.findUnique({
+        where: { nickName: nickName },
       });
       if (!profile) {
         throw { code: 428, message: "PROFILE_NOT_FOUND" };
