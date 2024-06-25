@@ -41,7 +41,7 @@ class sosmedHandler {
       if (!sosmed) {
         throw { code: 428, message: "SOCIAL_MEDIA_NOT_FOUND" };
       }
-      const { facebook, twitter, instagram, linkedin, youtube } = req.body;
+      const { facebook, twitter, instagram, linkedin, whatsApp, tiktok } = req.body;
       const updateSosmed = await prisma.socialMedia.update({
         where: { id: req.params.sosmedId },
         data: {
@@ -49,7 +49,8 @@ class sosmedHandler {
           twitter: twitter,
           instagram: instagram,
           linkedin: linkedin,
-          youtube: youtube,
+          whatsApp: whatsApp,
+          tiktok: tiktok,
         },
       });
       res.status(200).json({

@@ -44,7 +44,8 @@ model SocialMedia {
   twitter   String?
   instagram String?
   linkedin  String?
-  youtube   String?
+  whatsApp   String?
+  tiktok    String?
   profile   Profile? @relation(fields: [profileId], references: [id])
 }
 
