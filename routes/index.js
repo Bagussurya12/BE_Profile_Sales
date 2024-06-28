@@ -4,7 +4,7 @@ import AuthHandler from "../handlers/AuthHandler.js";
 import SosmedHandler from "../handlers/SosmedHandler.js";
 import ProductHandler from "../handlers/ProductHandler.js";
 import ProfileHandler from "../handlers/ProfileHandler.js";
-import ArticleHandler from "../handlers/ArticleHandler.js";
+// import ArticleHandler from "../handlers/ArticleHandler.js";
 
 import { uploadFiles } from "../middlewares/UploadFile.js";
 import jwtAuth from "../middlewares/JwtAuth.js";
@@ -38,10 +38,10 @@ router.get("/products/:productId", ProductHandler.getProductById);
 router.delete("/product/:productId", ProductHandler.deleteProductHandler);
 router.get("/product", ProductHandler.getAllProductHandler);
 // ARTICLE ROUTE
-router.post("/article", uploadFiles, ArticleHandler.addArticle);
-router.get("/article/:articleId", ArticleHandler.getArticleById);
-router.get("/article", ArticleHandler.getAllArticle);
-router.put("/article/:articleId", uploadFiles, ArticleHandler.updateArticleById);
-router.delete("/article/:articleId", ArticleHandler.deleteArticleById);
+// router.post("/article", uploadFiles, ArticleHandler.addArticle);
+// router.get("/article/:articleId", ArticleHandler.getArticleById);
+// router.get("/article", ArticleHandler.getAllArticle);
+// router.put("/article/:articleId", uploadFiles, ArticleHandler.updateArticleById);
+// router.delete("/article/:articleId", ArticleHandler.deleteArticleById);
 
 export default router;
