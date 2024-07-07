@@ -39,7 +39,7 @@ class UserHandler {
     try {
       const { fullname, email, password, level, nick_name, division } = req.body;
 
-      if (!fullname || !email || !password || !level || !nick_name || !division) {
+      if (!fullname || !email || !password || !level || !nick_name) {
         throw { code: 400, message: "MISSING_REQUIRED_FIELDS" };
       }
 
