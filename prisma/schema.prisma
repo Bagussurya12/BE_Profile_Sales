@@ -15,6 +15,7 @@ model User {
   status           String?
   nick_name        String          @unique
   level            String
+  division         String?  
   profile          Profile?
   houses           House[]
   articles         Article[] 
