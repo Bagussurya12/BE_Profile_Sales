@@ -258,7 +258,6 @@ class UserHandler {
         division: user.division,
         socialMedia: user.profile?.socialMedia,
       };
-
       return res.status(200).json({
         status: true,
         user: userData,

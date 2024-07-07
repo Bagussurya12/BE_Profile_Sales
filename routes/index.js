@@ -22,7 +22,7 @@ router.get("/Profil/:nickName", ProfileHandler.getProfileHandlerByNickName);
 // USERS ROUTE
 router.get("/Users", UserHandler.getAllUserHandler);
 router.get("/users/:userId", UserHandler.getUserById);
-router.get("/user/:nickName", UserHandler.getUserByNickName);
+router.get("/user/:nick_name", UserHandler.getUserByNickName);
 router.post("/Add-User", UserHandler.addUserHandler);
 router.put("/users/:userId", UserHandler.updateUserHandler);
 router.delete("/users/:userId", UserHandler.deleteUserById);
