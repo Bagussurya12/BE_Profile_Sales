@@ -57,6 +57,7 @@ class AuthHandler {
           status: req.body.status,
           level: req.body.level,
           nick_name: req.body.nickName,
+          division: req.body.division,
           profile: {
             create: {
               id: profileId,
